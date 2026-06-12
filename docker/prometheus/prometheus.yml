@@ -14,3 +14,8 @@ scrape_configs:
   - job_name: kafka
     static_configs:
       - targets: ["kafka-exporter:9308"]
+
+  - job_name: reco-api
+    metrics_path: /metrics
+    static_configs:
+      - targets: ["avalon-reco-api:8000"]
