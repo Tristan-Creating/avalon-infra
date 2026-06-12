@@ -1,0 +1,96 @@
+{
+  "uid": "avalon-overview",
+  "title": "Avalon Platform Overview",
+  "tags": ["avalon", "infrastructure"],
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "refresh": "30s",
+  "time": { "from": "now-1h", "to": "now" },
+  "panels": [
+    {
+      "id": 1,
+      "type": "stat",
+      "title": "Postgres up",
+      "gridPos": { "h": 5, "w": 4, "x": 0, "y": 0 },
+      "targets": [{ "expr": "pg_up", "refId": "A" }],
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [
+            { "type": "value", "options": { "1": { "text": "UP", "color": "green" }, "0": { "text": "DOWN", "color": "red" } } }
+          ],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "red", "value": null }, { "color": "green", "value": 1 }] }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 2,
+      "type": "stat",
+      "title": "Kafka brokers",
+      "gridPos": { "h": 5, "w": 4, "x": 4, "y": 0 },
+      "targets": [{ "expr": "kafka_brokers", "refId": "A" }],
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "red", "value": null }, { "color": "green", "value": 1 }] }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 3,
+      "type": "stat",
+      "title": "Database size",
+      "gridPos": { "h": 5, "w": 4, "x": 8, "y": 0 },
+      "targets": [{ "expr": "pg_database_size_bytes{datname=\"avalon\"}", "refId": "A" }],
+      "fieldConfig": { "defaults": { "unit": "bytes" }, "overrides": [] }
+    },
+    {
+      "id": 4,
+      "type": "stat",
+      "title": "Kafka topics (avalon.*)",
+      "gridPos": { "h": 5, "w": 4, "x": 12, "y": 0 },
+      "targets": [{ "expr": "count(kafka_topic_partitions{topic=~\"avalon.*\"})", "refId": "A" }],
+      "fieldConfig": { "defaults": {}, "overrides": [] }
+    },
+    {
+      "id": 5,
+      "type": "stat",
+      "title": "Active connections",
+      "gridPos": { "h": 5, "w": 4, "x": 16, "y": 0 },
+      "targets": [{ "expr": "sum(pg_stat_database_numbackends{datname=\"avalon\"})", "refId": "A" }],
+      "fieldConfig": { "defaults": {}, "overrides": [] }
+    },
+    {
+      "id": 6,
+      "type": "timeseries",
+      "title": "Postgres connections",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 5 },
+      "targets": [{ "expr": "pg_stat_database_numbackends{datname=\"avalon\"}", "legendFormat": "connections", "refId": "A" }],
+      "fieldConfig": { "defaults": { "custom": { "fillOpacity": 10 } }, "overrides": [] }
+    },
+    {
+      "id": 7,
+      "type": "timeseries",
+      "title": "Rows inserted / s (avalon db)",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 5 },
+      "targets": [{ "expr": "rate(pg_stat_database_tup_inserted{datname=\"avalon\"}[5m])", "legendFormat": "inserts/s", "refId": "A" }],
+      "fieldConfig": { "defaults": { "custom": { "fillOpacity": 10 } }, "overrides": [] }
+    },
+    {
+      "id": 8,
+      "type": "timeseries",
+      "title": "Transactions committed / s",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 13 },
+      "targets": [{ "expr": "rate(pg_stat_database_xact_commit{datname=\"avalon\"}[5m])", "legendFormat": "commits/s", "refId": "A" }],
+      "fieldConfig": { "defaults": { "custom": { "fillOpacity": 10 } }, "overrides": [] }
+    },
+    {
+      "id": 9,
+      "type": "timeseries",
+      "title": "Kafka messages in / s per topic",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 13 },
+      "targets": [{ "expr": "rate(kafka_topic_partition_current_offset{topic=~\"avalon.*\"}[5m])", "legendFormat": "{{topic}} p{{partition}}", "refId": "A" }],
+      "fieldConfig": { "defaults": { "custom": { "fillOpacity": 10 } }, "overrides": [] }
+    }
+  ]
+}

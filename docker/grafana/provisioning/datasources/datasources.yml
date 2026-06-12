@@ -1,0 +1,23 @@
+apiVersion: 1
+
+datasources:
+  - name: Prometheus
+    type: prometheus
+    access: proxy
+    url: http://prometheus:9090
+    isDefault: true
+    editable: false
+
+  # direct SQL access to the warehouse for business dashboards
+  - name: Avalon Postgres
+    type: postgres
+    access: proxy
+    url: postgres:5432
+    database: avalon
+    user: avalon
+    secureJsonData:
+      password: avalon_dev_password
+    jsonData:
+      sslmode: disable
+      postgresVersion: 1600
+    editable: false
